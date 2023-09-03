@@ -8,6 +8,7 @@ import main.Game;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class World {
     public World(String path) {
 
         try {
-            BufferedImage map = ImageIO.read(getClass().getResource(path));
+            BufferedImage map = ImageIO.read(new FileInputStream("res/" + path));
             int[] pixels = new int[map.getWidth() * map.getHeight()];
             WIDTH = map.getWidth();
             HEIGHT = map.getHeight();
@@ -94,11 +95,10 @@ public class World {
         Game.enemies.clear();
         Game.entities = new ArrayList<Entity>();
         Game.enemies = new ArrayList<Enemy>();
-        Game.spritesheet = new Spritesheet("/spritesheet.png");
+        Game.spritesheet = new Spritesheet("tilemap.png");
         player = new Player(0, 0, 16, 16, Game.spritesheet.getSpritesheet(32, 0, 16, 16));
         Game.entities.add(player);
         Game.world = new World("/" + newWorld);
-        return;
     }
 
     public void render(Graphics g){

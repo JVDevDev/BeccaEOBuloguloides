@@ -27,7 +27,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     public static final int SCALE = 3;
 
 
-    private int CUR_LEVEL = 1, MAX_LEVEL = 2;
+    private int CUR_LEVEL = 1;
+    private final int MAX_LEVEL = 2;
     public BufferedImage image;
 
     public static List<Entity> entities;
@@ -64,7 +65,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         entities = new ArrayList<Entity>();
         enemies = new ArrayList<Enemy>();
         bulletShoots = new ArrayList<BulletShoot>();
-        spritesheet = new Spritesheet("/spritesheet.png");
+        spritesheet = new Spritesheet("tilemap.png");
         player = new Player(0, 0, 16, 16,spritesheet.getSpritesheet(32, 0, 16, 16));
         entities.add(player);
         world = new World("/level1.png");
@@ -105,7 +106,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
 
     public void update(){
-        if (gameState == "NORMAL") {
+        if (gameState.equals("NORMAL")) {
             Sound.music.loop();
             this.restartGame = false;
             for (int i = 0; i < entities.size(); i++) {
@@ -125,7 +126,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
                 System.out.println(newWorld);
                 World.restartGame(newWorld);
             }
-        } else if (gameState == "GAME_OVER"){
+        } else if (gameState.equals("GAME_OVER")){
             this.framesGameOver++;
             if (this.framesGameOver == 40){
                 this.framesGameOver = 0;
@@ -143,7 +144,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
                 //System.out.println(newWorld);
                 World.restartGame(newWorld);
             }
-        } else if (gameState == "MENU"){
+        } else if (gameState.equals("MENU")){
             menu.update();
         }
     }
@@ -176,7 +177,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.setColor(new Color(255, 255, 255));
         g.drawString("Munição: " + player.ammo, 580, 20);
-        if (gameState == "GAME_OVER"){
+        if (gameState.equals("GAME_OVER")){
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(new Color(0,0,0,100));
             g2.fillRect(0,0, WIDTH * SCALE, HEIGHT * SCALE);
@@ -185,10 +186,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
             g.drawString("GAME OVER!", (WIDTH * SCALE) / 2 - 140, (HEIGHT * SCALE) / 2 - 15);
             g.setFont(new Font("Arial", Font.BOLD, 28));
             if (showMessageGameOver)
-            g.drawString(">Pressione ENTER para reiniciar<", (WIDTH * SCALE) / 2 - 220, (HEIGHT * SCALE) / 2 + 30);
-        } else if(gameState == "MENU"){
+                g.drawString(">Pressione ENTER para reiniciar<", (WIDTH * SCALE) / 2 - 220, (HEIGHT * SCALE) / 2 + 30);
+        } else if(gameState.equals("MENU")){
             menu.render(g);
-
         }
         bs.show();
     }
@@ -238,13 +238,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W){
             player.up = true;
-            if (gameState == "MENU"){
+            if (gameState.equals("MENU")){
                 menu.up = true;
             }
         }
         else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S){
             player.down = true;
-            if (gameState == "MENU"){
+            if (gameState.equals("MENU")){
                 menu.down = true;
             }
         }
@@ -253,7 +253,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER){
             this.restartGame = true;
-            if (gameState == "MENU"){
+            if (gameState.equals("MENU")){
                 menu.enter = true;
             }
         }
@@ -307,4 +307,3 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     }
 }
-

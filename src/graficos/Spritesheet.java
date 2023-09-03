@@ -2,6 +2,7 @@ package graficos;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Spritesheet {
@@ -11,7 +12,7 @@ public class Spritesheet {
     public Spritesheet(String path) {
 
         try {
-            spritesheet = ImageIO.read(getClass().getResource(path));
+            spritesheet = ImageIO.read(new FileInputStream("res/" + path));
         } catch (IOException e) {
             e.printStackTrace();
         }
