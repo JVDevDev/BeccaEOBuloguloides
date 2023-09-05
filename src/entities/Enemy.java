@@ -35,18 +35,18 @@ public class Enemy extends Entity{
     }
 
     public void update() {
-        if (this.isCollidinWithPlayer() == false){
-            if ((int) x < Game.player.getX() && World.isFree((int) (x + speed), this.getY(), z)
+        if (!this.isCollidinWithPlayer()){
+            if ((int) x < Game.player.getX() && World.isFree((int) (x + speed), this.getY())
                     && !isColliding((int) (x + speed), this.getY())) {
                 x += speed;
-            } else if ((int) x > Game.player.getX() && World.isFree((int) (x - speed), this.getY(), z)
+            } else if ((int) x > Game.player.getX() && World.isFree((int) (x - speed), this.getY())
                     && !isColliding((int) (x - speed), this.getY())) {
                 x -= speed;
             }
-            if ((int) y < Game.player.getY() && World.isFree(this.getX(), (int) (y + speed), z)
+            if ((int) y < Game.player.getY() && World.isFree(this.getX(), (int) (y + speed))
                     && !isColliding(this.getX(), (int) (y + speed))) {
                 y += speed;
-            } else if ((int) y > Game.player.getY() && World.isFree(this.getX(), (int) (y - speed), z)
+            } else if ((int) y > Game.player.getY() && World.isFree(this.getX(), (int) (y - speed))
                     && !isColliding(this.getX(), (int) (y - speed))) {
                 y -= speed;
             }
@@ -105,10 +105,7 @@ public class Enemy extends Entity{
     public boolean isCollidinWithPlayer(){
         Rectangle enemyCurrent = new Rectangle(this.getX() + maskx, this.getY() +masky, maskw, maskh);
         Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16, 16);
-        if(enemyCurrent.intersects(player) && Player.z == z){
-            return true;
-        }
-        return false;
+        return enemyCurrent.intersects(player);
     }
 
     public boolean isColliding(int xNext, int yNext){
