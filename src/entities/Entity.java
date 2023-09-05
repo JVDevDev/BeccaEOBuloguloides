@@ -5,8 +5,6 @@ import main.Game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-
-
 public class Entity {
 
     public static BufferedImage LIFEPACK_EN = Game.spritesheet.getSpritesheet(32, 128, 16, 16);
@@ -14,9 +12,9 @@ public class Entity {
     public static BufferedImage BULLET_EN = Game.spritesheet.getSpritesheet(32, 144, 16, 16);
     public static BufferedImage ENEMY_EN = Game.spritesheet.getSpritesheet(48, 144, 16, 16);
 
-
     protected double x;
     protected double y;
+    protected int z;
     protected int width;
     protected int height;
 
@@ -71,18 +69,17 @@ public class Entity {
     public static boolean isColliding(Entity e1, Entity e2){
         Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY() + e1.masky, e1.maskwidth, e1.maskheight);
         Rectangle e2Mask = new Rectangle(e2.getX() + e2.maskx, e2.getY() + e2.masky, e2.maskwidth, e2.maskheight);
-
-        return e1Mask.intersects(e2Mask);
+        if(e1Mask.intersects(e2Mask) && e1.z == e2.z){
+            return true;
+        }
+        return false;
     }
 
     public void render(Graphics g){
         g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
-        //g.setColor(Color.red);
-        //g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, maskwidth, maskheight);
     }
 
     public void update(){
 
     }
-
 }

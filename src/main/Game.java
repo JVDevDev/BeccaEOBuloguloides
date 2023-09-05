@@ -66,7 +66,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         enemies = new ArrayList<Enemy>();
         bulletShoots = new ArrayList<BulletShoot>();
         spritesheet = new Spritesheet("tilemap.png");
-        player = new Player(0, 0, 16, 16,spritesheet.getSpritesheet(32, 0, 16, 16));
+        player = new Player(0, 0, 16,16,spritesheet.getSpritesheet(32, 0, 16, 16));
         entities.add(player);
         world = new World("/level1.png");
         menu = new Menu();
@@ -230,6 +230,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            player.jump = true;
+        }
         if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A){
             player.left = true;
         }
