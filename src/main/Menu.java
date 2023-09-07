@@ -20,6 +20,12 @@ public class Menu {
     public static boolean saveGame = false;
 
     public void update(){
+        File file = new File("save.txt");
+        if(file.exists()){
+            saveExists = true;
+        } else {
+            saveExists = false;
+        }
         if (up) {
             up = false;
             currentOption--;
@@ -39,6 +45,14 @@ public class Menu {
             if (options[currentOption] == "novo jogo" || options[currentOption] == "continuar") {
                 Game.gameState = "NORMAL";
                 pause = false;
+                file = new File("save.txt");
+                file.delete();
+            } else if(options[currentOption] == "carregar jogo"){
+              file = new File("save.txt");
+              if(file.exists()){
+                  String saver = loadGame(10);
+                  applySave(saver);
+              }
             } else if (options[currentOption] == "sair") {
                 System.exit(1);
             }
@@ -51,8 +65,10 @@ public class Menu {
             String[] spl2 = spl[i].split(":");
             switch (spl2[0]){
                 case "level":
-                    World.restartGame("level" + spl[2] + ".png");
+                    World.restartGame("level" + spl2[1] + ".png");
                     Game.gameState = "NORMAL";
+                    pause = false;
+                    break;
             }
         }
     }
@@ -87,7 +103,7 @@ public class Menu {
     public static void saveGame(String[] val1, int[] val2, int encode){
         BufferedWriter escrever = null;
         try{
-            escrever =  new BufferedWriter(new FileWriter("Save.txt"));
+            escrever =  new BufferedWriter(new FileWriter("save.txt"));
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -111,7 +127,6 @@ public class Menu {
             escrever.close();
         }catch (IOException e){}
     }
-
     public void render(Graphics g){
         g.setColor(new Color(71, 122, 42));
         g.fillRect(0, 0, Game.WIDTH * Game.SCALE, Game.HEIGHT * Game.SCALE);

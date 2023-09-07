@@ -54,7 +54,7 @@ public class Enemy extends Entity{
             // fazer o player perder vida
             if (Game.random.nextInt(100) < 35){
                 Sound.hitEffect.play();
-                //Game.player.life -= Game.random.nextInt(3);
+                Game.player.life -= Game.random.nextInt(3);
                 Game.player.isDamaged = true;
             }
         }

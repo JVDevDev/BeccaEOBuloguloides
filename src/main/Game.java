@@ -28,7 +28,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 
     private int CUR_LEVEL = 1;
-    private final int MAX_LEVEL = 2;
+    private final int MAX_LEVEL = 3;
     public BufferedImage image;
 
     public static List<Entity> entities;
@@ -50,6 +50,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     private boolean restartGame = false;
 
     public Menu menu;
+
+    public boolean saveGame = false;
 
     public Game() {
         random = new Random();
@@ -107,6 +109,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     public void update(){
         if (gameState.equals("NORMAL")) {
+            if(this.saveGame){
+                this.saveGame = false;
+                String[] opt1 = {"level"};
+                int[] opt2 = {this.CUR_LEVEL};
+                Menu.saveGame(opt1, opt2,10);
+                System.out.println("Jogo salvo!");
+            }
             Sound.music.loop();
             this.restartGame = false;
             for (int i = 0; i < entities.size(); i++) {
@@ -141,7 +150,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
                 this.gameState = "NORMAL";
                 CUR_LEVEL = 1;
                 String newWorld = "level" + CUR_LEVEL + ".png";
-                //System.out.println(newWorld);
                 World.restartGame(newWorld);
             }
         } else if (gameState.equals("MENU")){
@@ -160,7 +168,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         /* renderização do jogo*/
-        //Graphics2D g2 = (Graphics2D) g;//cast
         world.render(g);
         for (int i = 0; i < entities.size(); i++){
             Entity e = entities.get(i);
@@ -260,6 +267,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
             gameState = "MENU";
             menu.pause = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE){
+            if(gameState.equals("NORMAL")){
+                this.saveGame = true;
+            }
         }
 
     }
