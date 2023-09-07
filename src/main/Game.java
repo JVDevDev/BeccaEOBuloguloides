@@ -28,7 +28,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 
     private int CUR_LEVEL = 1;
-    private final int MAX_LEVEL = 3;
     public BufferedImage image;
 
     public static List<Entity> entities;
@@ -57,16 +56,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         random = new Random();
         addKeyListener(this);
         addMouseListener(this);
-        //definir tamanho da tela
+        //set screen size
         setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        //iniciar tela
+        //start screen
         initFrame();
-        //inicializando objetos
+        //initializing objects
         ui = new UI();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        entities = new ArrayList<Entity>();
-        enemies = new ArrayList<Enemy>();
-        bulletShoots = new ArrayList<BulletShoot>();
+        entities = new ArrayList<>();
+        enemies = new ArrayList<>();
+        bulletShoots = new ArrayList<>();
         spritesheet = new Spritesheet("tilemap.png");
         player = new Player(0, 0, 16,16,spritesheet.getSpritesheet(32, 0, 16, 16));
         entities.add(player);
@@ -75,7 +74,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
 
     public void initFrame(){
-        //definir propriedades de tela
+        //set screen properties
         frame = new JFrame("Game_01");
         frame.add(this);
         frame.setResizable(false);
@@ -85,7 +84,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         frame.setVisible(true);
     }
 
-    //inicialização do jogo
+    //game startup
     public synchronized void start(){
         thread = new Thread(this);
         isRunning = true;
@@ -101,59 +100,57 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
     }
 
-    //metodo principal
+    //main method
     public static void main(String[] args) {
         Game game = new Game();
         game.start();
     }
 
     public void update(){
-        if (gameState.equals("NORMAL")) {
-            if(this.saveGame){
-                this.saveGame = false;
-                String[] opt1 = {"level"};
-                int[] opt2 = {this.CUR_LEVEL};
-                Menu.saveGame(opt1, opt2,10);
-                System.out.println("Jogo salvo!");
-            }
-            Sound.music.loop();
-            this.restartGame = false;
-            for (int i = 0; i < entities.size(); i++) {
-                Entity e = entities.get(i);
-                e.update();
-            }
-            for (int i = 0; i < bulletShoots.size(); i++) {
-                bulletShoots.get(i).update();
-            }
-            if (enemies.size() == 0) {
-                //avançar para o próximo level
-                CUR_LEVEL++;
-                if (CUR_LEVEL > MAX_LEVEL) {
-                    CUR_LEVEL = 1;
+        switch (gameState) {
+            case "NORMAL" -> {
+                if (this.saveGame) {
+                    this.saveGame = false;
+                    String[] opt1 = {"level"};
+                    int[] opt2 = {this.CUR_LEVEL};
+                    Menu.saveGame(opt1, opt2, 10);
                 }
-                String newWorld = "level" + CUR_LEVEL + ".png";
-                System.out.println(newWorld);
-                World.restartGame(newWorld);
-            }
-        } else if (gameState.equals("GAME_OVER")){
-            this.framesGameOver++;
-            if (this.framesGameOver == 40){
-                this.framesGameOver = 0;
-                if (this.showMessageGameOver){
-                    this.showMessageGameOver = false;
-                } else {
-                    this.showMessageGameOver = true;
-                }
-            }
-            if (restartGame){
+                Sound.music.loop();
                 this.restartGame = false;
-                this.gameState = "NORMAL";
-                CUR_LEVEL = 1;
-                String newWorld = "level" + CUR_LEVEL + ".png";
-                World.restartGame(newWorld);
+                for (int i = 0; i < entities.size(); i++) {
+                    Entity e = entities.get(i);
+                    e.update();
+                }
+                for (int i = 0; i < bulletShoots.size(); i++) {
+                    bulletShoots.get(i).update();
+                }
+                if (enemies.isEmpty()) {
+                    //advance to the next level
+                    CUR_LEVEL++;
+                    int MAX_LEVEL = 3;
+                    if (CUR_LEVEL > MAX_LEVEL) {
+                        CUR_LEVEL = 1;
+                    }
+                    String newWorld = "level" + CUR_LEVEL + ".png";
+                    System.out.println(newWorld);
+                    World.restartGame(newWorld);
+                }
             }
-        } else if (gameState.equals("MENU")){
-            menu.update();
+            case "GAME_OVER" -> {
+                this.framesGameOver++;
+                if (this.framesGameOver == 40) {
+                    this.framesGameOver = 0;
+                    this.showMessageGameOver = !this.showMessageGameOver;
+                }
+                if (restartGame) {
+                    this.restartGame = false;
+                    gameState = "NORMAL";
+                    CUR_LEVEL = 1;
+                    String newWorld = "level" + CUR_LEVEL + ".png";
+                    World.restartGame(newWorld);
+                }
+            }
+            case "MENU" -> menu.update();
         }
     }
 
@@ -167,7 +164,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         g.setColor(new Color(0, 0, 0));
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        /* renderização do jogo*/
+        /* game rendering */
         world.render(g);
         for (int i = 0; i < entities.size(); i++){
             Entity e = entities.get(i);
@@ -200,7 +197,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         bs.show();
     }
 
-    //game looping avançado
+    //advanced game looping
     @Override
     public void run() {
         long lastTime = System.nanoTime();
@@ -266,7 +263,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
             gameState = "MENU";
-            menu.pause = true;
+            Menu.pause = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE){
             if(gameState.equals("NORMAL")){
